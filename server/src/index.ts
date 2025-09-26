@@ -5,16 +5,16 @@ import './firebase';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import formRoutes from './routes/forms';
+import * as functions from 'firebase-functions';
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: true }));
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/forms', formRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/forms', formRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+export const api = functions.https.onRequest(app);
