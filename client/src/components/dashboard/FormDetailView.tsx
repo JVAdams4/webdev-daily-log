@@ -47,7 +47,7 @@ const FormDetailView: React.FC<FormDetailViewProps> = ({ formId, onBack }) => {
                 <div className="mb-2"><strong>Focus:</strong><p className="bg-white p-2 rounded text-dark">{formData.focus || 'N/A'}</p></div>
                 <div className="mb-2"><strong>Overall Satisfaction:</strong><p className="bg-white p-2 rounded text-dark">{formData.overallSatisfaction || 'N/A'}</p></div>
             </div>
-            {(user.isTeacher || form.feedback) && <InstructorFeedback feedback={form.feedback} formId={form._id} isTeacher={user.isTeacher} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
+            {(user && (user.isTeacher || form.feedback)) && <InstructorFeedback feedback={form.feedback} formId={form._id} isTeacher={user.isTeacher} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
         </div>
     );
 };
