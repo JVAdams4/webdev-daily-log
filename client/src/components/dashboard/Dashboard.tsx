@@ -3,10 +3,19 @@ import api from '../../services/api';
 import FormDetailView from './FormDetailView';
 import NewForm from './NewForm';
 
+// Define types for state
+type ViewType = 'list' | 'detail' | 'new';
+
+interface Form {
+  _id: string;
+  date: string;
+  feedback: any; // Or a more specific Feedback type
+}
+
 const Dashboard = () => {
-    const [forms, setForms] = useState([]);
-    const [view, setView] = useState('list'); // 'list', 'detail', 'new'
-    const [selectedFormId, setSelectedFormId] = useState(null);
+    const [forms, setForms] = useState<Form[]>([]);
+    const [view, setView] = useState<ViewType>('list');
+    const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchForms = async () => {
@@ -19,13 +28,14 @@ const Dashboard = () => {
         }
     }, [view]);
 
-    const handleViewChange = (newView, formId = null) => {
+    const handleViewChange = (newView: ViewType, formId: string | null = null) => {
         setSelectedFormId(formId);
         setView(newView);
     }
 
     if (view === 'new') return <NewForm onFormSubmit={() => setView('list')} />;
-    if (view === 'detail') return <FormDetailView formId={selectedFormId} onBack={() => setView('list')} />;
+    // The check below ensures selectedFormId is a string when FormDetailView is rendered
+    if (view === 'detail' && selectedFormId) return <FormDetailView formId={selectedFormId} onBack={() => setView('list')} />;
 
     return (
         <div>
