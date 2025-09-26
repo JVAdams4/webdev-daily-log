@@ -15,14 +15,17 @@ router.get('/', auth, async (req: AuthRequest, res) => {
 
         const usersWithCounts = users.map(user => {
             const ungradedCount = forms.filter(form => form.userId === user.id).length;
-            const { password, ...userWithoutPassword } = user;
-            return { ...userWithoutPassword, ungradedCount };
+            return { ...user, ungradedCount };
         });
 
         res.json(usersWithCounts);
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
+    }
+});
+
+export default router;        res.status(500).send('Server Error');
     }
 });
 
