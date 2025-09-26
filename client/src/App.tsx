@@ -7,12 +7,17 @@ import Dashboard from './components/dashboard/Dashboard';
 import MasterDashboard from './components/master/MasterDashboard';
 import Navbar from './components/layout/Navbar';
 
-const PrivateRoute = ({ children, isMasterRoute = false }) => {
+interface PrivateRouteProps {
+  children: React.ReactNode;
+  isMasterRoute?: boolean;
+}
+
+const PrivateRoute = ({ children, isMasterRoute = false }: PrivateRouteProps) => {
     const { user } = useAuth();
     if (!user) return <Navigate to="/login" />;
     if (isMasterRoute && !user.isMaster) return <Navigate to="/" />;
     if (!isMasterRoute && user.isMaster) return <Navigate to="/master" />;
-    return children;
+    return <>{children}</>;
 };
 
 const AppRoutes = () => {
