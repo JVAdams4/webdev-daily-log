@@ -5,7 +5,7 @@ import { db } from '../db';
 const router = express.Router();
 
 router.get('/', auth, async (req: AuthRequest, res) => {
-    if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
+    if (!req.user!.isTeacher) return res.status(403).json({ msg: 'Access denied' });
     try {
         const usersSnapshot = await db.collection('users').where('isTeacher', '==', false).get();
         const users = usersSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
@@ -22,10 +22,6 @@ router.get('/', auth, async (req: AuthRequest, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
-    }
-});
-
-export default router;        res.status(500).send('Server Error');
     }
 });
 
