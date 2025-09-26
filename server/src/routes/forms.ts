@@ -36,7 +36,7 @@ router.get('/', auth, async (req: AuthRequest, res) => {
 });
 
 router.get('/user/:userId', auth, async (req: AuthRequest, res) => {
-    if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
+    if (!req.user!.isTeacher) return res.status(403).json({ msg: 'Access denied' });
     try {
         const snapshot = await db.collection('forms').where('userId', '==', req.params.userId).orderBy('date', 'desc').get();
         const forms = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
@@ -50,7 +50,7 @@ router.get('/:id', auth, async (req: AuthRequest, res) => {
         if (!doc.exists) return res.status(404).json({ msg: 'Form not found' });
 
         const form = doc.data() as IForm;
-        if (form.userId.toString() !== req.user!.id && !req.user!.isMaster) {
+        if (form.userId.toString() !== req.user!.id && !req.user!.isTeacher) {
             return res.status(401).json({ msg: 'Not authorized' });
         }
         res.json({ ...form, id: doc.id });
@@ -58,7 +58,7 @@ router.get('/:id', auth, async (req: AuthRequest, res) => {
 });
 
 router.put('/:id/feedback', auth, async (req: AuthRequest, res) => {
-    if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
+    if (!req.user!.isTeacher) return res.status(403).json({ msg: 'Access denied' });
     try {
         const docRef = db.collection('forms').doc(req.params.id);
         await docRef.update({ feedback: req.body });

@@ -2,9 +2,27 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import FormDetailView from '../dashboard/FormDetailView';
 
-const UserFormsView = ({ user, onBack }) => {
-    const [forms, setForms] = useState([]);
-    const [selectedFormId, setSelectedFormId] = useState(null);
+// Define interfaces for better type safety
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+}
+
+interface Form {
+  _id: string;
+  date: string;
+  feedback: any; // Or a more specific Feedback type
+}
+
+interface UserFormsViewProps {
+  user: User;
+  onBack: () => void;
+}
+
+const UserFormsView: React.FC<UserFormsViewProps> = ({ user, onBack }) => {
+    const [forms, setForms] = useState<Form[]>([]);
+    const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchForms = async () => {

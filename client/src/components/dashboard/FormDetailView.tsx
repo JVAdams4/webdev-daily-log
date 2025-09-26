@@ -3,8 +3,13 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import InstructorFeedback from './InstructorFeedback';
 
-const FormDetailView = ({ formId, onBack }) => {
-    const [form, setForm] = useState(null);
+interface FormDetailViewProps {
+  formId: string;
+  onBack: () => void;
+}
+
+const FormDetailView: React.FC<FormDetailViewProps> = ({ formId, onBack }) => {
+    const [form, setForm] = useState<any>(null);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -42,7 +47,7 @@ const FormDetailView = ({ formId, onBack }) => {
                 <div className="mb-2"><strong>Focus:</strong><p className="bg-white p-2 rounded text-dark">{formData.focus || 'N/A'}</p></div>
                 <div className="mb-2"><strong>Overall Satisfaction:</strong><p className="bg-white p-2 rounded text-dark">{formData.overallSatisfaction || 'N/A'}</p></div>
             </div>
-            {(user.isMaster || form.feedback) && <InstructorFeedback feedback={form.feedback} formId={form._id} isMaster={user.isMaster} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
+            {(user.isTeacher || form.feedback) && <InstructorFeedback feedback={form.feedback} formId={form._id} isTeacher={user.isTeacher} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
         </div>
     );
 };

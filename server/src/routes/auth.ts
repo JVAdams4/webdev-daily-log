@@ -16,14 +16,14 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
-        const isMaster = email === process.env.MASTER_EMAIL;
+        const isTeacher = email === process.env.TEACHER_EMAIL;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser: IUser = { firstName, lastName, email, password: hashedPassword, isMaster };
+        const newUser: IUser = { firstName, lastName, email, password: hashedPassword, isTeacher };
         const docRef = await db.collection('users').add(newUser);
 
-        const payload = { user: { id: docRef.id, isMaster } };
+        const payload = { user: { id: docRef.id, isTeacher } };
         jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 3600 }, (err, token) => {
             if (err) throw err;
             res.json({ token });
@@ -48,7 +48,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        const payload = { user: { id: userId, isMaster: user.isMaster } };
+        const payload = { user: { id: userId, isTeacher: user.isTeacher } };
         jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 3600 }, (err, token) => {
             if (err) throw err;
             res.json({ token });

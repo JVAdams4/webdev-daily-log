@@ -4,19 +4,19 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
-import MasterDashboard from './components/master/MasterDashboard';
+import TeacherDashboard from './components/teacher/TeacherDashboard';
 import Navbar from './components/layout/Navbar';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
-  isMasterRoute?: boolean;
+  isTeacherRoute?: boolean;
 }
 
-const PrivateRoute = ({ children, isMasterRoute = false }: PrivateRouteProps) => {
+const PrivateRoute = ({ children, isTeacherRoute = false }: PrivateRouteProps) => {
     const { user } = useAuth();
     if (!user) return <Navigate to="/login" />;
-    if (isMasterRoute && !user.isMaster) return <Navigate to="/" />;
-    if (!isMasterRoute && user.isMaster) return <Navigate to="/master" />;
+    if (isTeacherRoute && !user.isTeacher) return <Navigate to="/" />;
+    if (!isTeacherRoute && user.isTeacher) return <Navigate to="/teacher" />;
     return <>{children}</>;
 };
 
@@ -27,7 +27,7 @@ const AppRoutes = () => {
       <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
       <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-      <Route path="/master" element={<PrivateRoute isMasterRoute={true}><MasterDashboard /></PrivateRoute>} />
+      <Route path="/teacher" element={<PrivateRoute isTeacherRoute={true}><TeacherDashboard /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

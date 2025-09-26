@@ -1,11 +1,40 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import api from '../services/api';
 
-const AuthContext = createContext(null);
-export const useAuth = () => useContext(AuthContext);
+// Define the User type based on your data structure
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isTeacher: boolean;
+}
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+// Define the shape of the context
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (email, password) => Promise<void>;
+  register: (userData) => Promise<void>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -13,9 +42,12 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
+          // Assuming your API sets the auth token header
           const res = await api.get('/auth');
           setUser(res.data);
-        } catch (err) { localStorage.removeItem('token'); }
+        } catch (err) {
+          localStorage.removeItem('token');
+        }
       }
       setLoading(false);
     };

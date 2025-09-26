@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', auth, async (req: AuthRequest, res) => {
     if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
     try {
-        const usersSnapshot = await db.collection('users').where('isMaster', '==', false).get();
+        const usersSnapshot = await db.collection('users').where('isTeacher', '==', false).get();
         const users = usersSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
 
         const formsSnapshot = await db.collection('forms').where('feedback', '==', null).get();

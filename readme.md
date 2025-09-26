@@ -14,7 +14,7 @@ This document contains two guides:
 *   User registration and login.
 *   Password recovery and change password functionality.
 *   A "Daily Work & Project Log" form for users to submit.
-*   Separate dashboard views for regular users and a master account.
+*   Separate dashboard views for regular users and a teacher account.
 *   A complete grading and feedback loop with status indicators.
 
 ---
@@ -31,10 +31,10 @@ This document contains two guides:
 6.  **View Feedback:** If the form has been graded, the "Instructor Feedback & Grading" section will appear at the bottom of their form, showing the score and comments from the instructor.
 7.  **Submit New Form:** Users can click "Open New Form" to fill out and submit a new daily log.
 
-### Master Account (Instructor) Flow
+### Teacher Account (Instructor) Flow
 
-1.  **Login:** The instructor logs in using the master account credentials (`master@account.com`).
-2.  **Master Dashboard:** The master dashboard displays a list of all registered users. Next to each user's name, a red badge will show the number of their forms that are waiting to be graded.
+1.  **Login:** The instructor logs in using the teacher account credentials (`SHAFFERMA@pcsb.org`).
+2.  **Teacher Dashboard:** The teacher dashboard displays a list of all registered users. Next to each user's name, a red badge will show the number of their forms that are waiting to be graded.
 3.  **View User Submissions:** Clicking on a user's name opens a new view that lists all forms submitted by that specific user.
 4.  **Form Statuses:** In this list, each form is clearly marked with either a green "Graded" status or a red "Not Graded" status.
 5.  **View & Grade Form:** The instructor can click on any form in the list to view the student's full submission. The view shows each form question followed by the student's answer.
@@ -56,7 +56,7 @@ This guide provides the complete, copy-and-paste-ready code to build a full-stac
 ```
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_super_secret_jwt_secret
-MASTER_EMAIL=master@account.com
+TEACHER_EMAIL=SHAFFERMA@pcsb.org
 ```
 
 ### **`server/package.json`**
@@ -126,7 +126,7 @@ export interface IUser extends Document {
   lastName: string;
   email: string;
   password?: string;
-  isMaster: boolean;
+  isTeacher: boolean;
 }
 
 const UserSchema = new Schema({
@@ -134,7 +134,7 @@ const UserSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
-    isMaster: { type: Boolean, default: false }
+    isTeacher: { type: Boolean, default: false }
 });
 
 export default model<IUser>('User', UserSchema);
@@ -171,7 +171,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
-  user?: { id: string; isMaster: boolean };
+  user?: { id: string; isTeacher: boolean };
 }
 
 export default function(req: AuthRequest, res: Response, next: NextFunction) {
@@ -179,7 +179,7 @@ export default function(req: AuthRequest, res: Response, next: NextFunction) {
   if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { user: { id: string; isMaster: boolean } };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { user: { id: string; isTeacher: boolean } };
     req.user = decoded.user;
     next();
   } catch (e) {
@@ -204,12 +204,12 @@ router.post('/register', async (req, res) => {
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ msg: 'User already exists' });
 
-        user = new User({ firstName, lastName, email, password, isMaster: email === process.env.MASTER_EMAIL });
+        user = new User({ firstName, lastName, email, password, isTeacher: email === process.env.TEACHER_EMAIL });
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
         await user.save();
 
-        const payload = { user: { id: user.id, isMaster: user.isMaster } };
+        const payload = { user: { id: user.id, isTeacher: user.isTeacher } };
         jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 3600 }, (err, token) => {
             if (err) throw err;
             res.json({ token });
@@ -226,7 +226,7 @@ router.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password!);
         if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
-        const payload = { user: { id: user.id, isMaster: user.isMaster } };
+        const payload = { user: { id: user.id, isTeacher: user.isTeacher } };
         jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 3600 }, (err, token) => {
             if (err) throw err;
             res.json({ token });
@@ -254,9 +254,9 @@ import Form from '../models/Form';
 const router = express.Router();
 
 router.get('/', auth, async (req: AuthRequest, res) => {
-    if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
+    if (!req.user!.isTeacher) return res.status(403).json({ msg: 'Access denied' });
     try {
-        const users = await User.find({ isMaster: false }).select('-password');
+        const users = await User.find({ isTeacher: false }).select('-password');
         const forms = await Form.find({ feedback: null });
         const usersWithCounts = users.map(user => {
             const ungradedCount = forms.filter(form => form.userId.equals(user._id)).length;
@@ -300,7 +300,7 @@ router.get('/', auth, async (req: AuthRequest, res) => {
 });
 
 router.get('/user/:userId', auth, async (req: AuthRequest, res) => {
-    if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
+    if (!req.user!.isTeacher) return res.status(403).json({ msg: 'Access denied' });
     try {
         const forms = await Form.find({ userId: req.params.userId }).sort({ date: -1 });
         res.json(forms);
@@ -311,7 +311,7 @@ router.get('/:id', auth, async (req: AuthRequest, res) => {
     try {
         const form = await Form.findById(req.params.id);
         if (!form) return res.status(404).json({ msg: 'Form not found' });
-        if (form.userId.toString() !== req.user!.id && !req.user!.isMaster) {
+        if (form.userId.toString() !== req.user!.id && !req.user!.isTeacher) {
             return res.status(401).json({ msg: 'Not authorized' });
         }
         res.json(form);
@@ -319,7 +319,7 @@ router.get('/:id', auth, async (req: AuthRequest, res) => {
 });
 
 router.put('/:id/feedback', auth, async (req: AuthRequest, res) => {
-    if (!req.user!.isMaster) return res.status(403).json({ msg: 'Access denied' });
+    if (!req.user!.isTeacher) return res.status(403).json({ msg: 'Access denied' });
     try {
         const form = await Form.findByIdAndUpdate(req.params.id, { $set: { feedback: req.body } }, { new: true });
         if (!form) return res.status(404).json({ msg: 'Form not found' });
@@ -408,14 +408,14 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
-import MasterDashboard from './components/master/MasterDashboard';
+import TeacherDashboard from './components/teacher/TeacherDashboard';
 import Navbar from './components/layout/Navbar';
 
-const PrivateRoute = ({ children, isMasterRoute = false }) => {
+const PrivateRoute = ({ children, isTeacherRoute = false }) => {
     const { user } = useAuth();
     if (!user) return <Navigate to="/login" />;
-    if (isMasterRoute && !user.isMaster) return <Navigate to="/" />;
-    if (!isMasterRoute && user.isMaster) return <Navigate to="/master" />;
+    if (isTeacherRoute && !user.isTeacher) return <Navigate to="/" />;
+    if (!isTeacherRoute && user.isTeacher) return <Navigate to="/teacher" />;
     return children;
 };
 
@@ -426,7 +426,7 @@ const AppRoutes = () => {
       <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
       <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-      <Route path="/master" element={<PrivateRoute isMasterRoute={true}><MasterDashboard /></PrivateRoute>} />
+      <Route path="/teacher" element={<PrivateRoute isTeacherRoute={true}><TeacherDashboard /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
@@ -627,13 +627,13 @@ const NewForm = ({ onFormSubmit }) => {
 export default NewForm;
 ```
 
-### **`client/src/components/master/MasterDashboard.tsx`**
+### **`client/src/components/teacher/TeacherDashboard.tsx`**
 ```typescript
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import UserFormsView from './UserFormsView';
 
-const MasterDashboard = () => {
+const TeacherDashboard = () => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -657,7 +657,7 @@ const MasterDashboard = () => {
 
     return (
         <div>
-            <h2>Master Dashboard</h2>
+            <h2>Teacher Dashboard</h2>
             <ul className="list-group">
                 {users.map(user => (
                     <li key={user._id} onClick={() => setSelectedUser(user)} className="list-group-item d-flex justify-content-between align-items-center" style={{cursor: 'pointer'}}>
@@ -669,10 +669,10 @@ const MasterDashboard = () => {
         </div>
     );
 };
-export default MasterDashboard;
+export default TeacherDashboard;
 ```
 
-### **`client/src/components/master/UserFormsView.tsx`**
+### **`client/src/components/teacher/UserFormsView.tsx`**
 ```typescript
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
@@ -758,7 +758,7 @@ const FormDetailView = ({ formId, onBack }) => {
                 <div className="mb-2"><strong>Focus:</strong><p className="bg-white p-2 rounded text-dark">{formData.focus || 'N/A'}</p></div>
                 <div className="mb-2"><strong>Overall Satisfaction:</strong><p className="bg-white p-2 rounded text-dark">{formData.overallSatisfaction || 'N/A'}</p></div>
             </div>
-            {(user.isMaster || form.feedback) && <InstructorFeedback feedback={form.feedback} formId={form._id} isMaster={user.isMaster} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
+            {(user.isTeacher || form.feedback) && <InstructorFeedback feedback={form.feedback} formId={form._id} isTeacher={user.isTeacher} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
         </div>
     );
 };
@@ -770,7 +770,7 @@ export default FormDetailView;
 import React, { useState } from 'react';
 import api from '../../services/api';
 
-const InstructorFeedback = ({ feedback, formId, isMaster, onFeedbackSaved }) => {
+const InstructorFeedback = ({ feedback, formId, isTeacher, onFeedbackSaved }) => {
     const [data, setData] = useState(feedback || { score: '', bonus: '', comments: '' });
     const handleChange = e => setData({ ...data, [e.target.name]: e.target.value });
 
@@ -787,11 +787,11 @@ const InstructorFeedback = ({ feedback, formId, isMaster, onFeedbackSaved }) => 
             <h4>Instructor Feedback & Grading</h4>
             <p><strong>3-2-1 Daily Work Grading System</strong>: 3 – Mastery, 2 – Needs Improvement, 1 – Incomplete.</p>
             <div className="row mb-3">
-                <div className="col-auto"><label className="form-label">Score:</label><input type="text" name="score" value={data.score} onChange={handleChange} readOnly={!isMaster} className="form-control" /></div>
-                <div className="col-auto"><label className="form-label">Bonus:</label><input type="text" name="bonus" value={data.bonus} onChange={handleChange} readOnly={!isMaster} className="form-control" /></div>
+                <div className="col-auto"><label className="form-label">Score:</label><input type="text" name="score" value={data.score} onChange={handleChange} readOnly={!isTeacher} className="form-control" /></div>
+                <div className="col-auto"><label className="form-label">Bonus:</label><input type="text" name="bonus" value={data.bonus} onChange={handleChange} readOnly={!isTeacher} className="form-control" /></div>
             </div>
-            <div className="mb-3"><label className="form-label">Comments:</label><textarea name="comments" value={data.comments} onChange={handleChange} readOnly={!isMaster} className="form-control" rows="3"></textarea></div>
-            {isMaster && <button className="btn btn-success" onClick={handleSave}>Save Feedback</button>}
+            <div className="mb-3"><label className="form-label">Comments:</label><textarea name="comments" value={data.comments} onChange={handleChange} readOnly={!isTeacher} className="form-control" rows="3"></textarea></div>
+            {isTeacher && <button className="btn btn-success" onClick={handleSave}>Save Feedback</button>}
         </div>
     );
 };

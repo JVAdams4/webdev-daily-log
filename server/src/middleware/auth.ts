@@ -10,7 +10,7 @@ export default function(req: AuthRequest, res: Response, next: NextFunction) {
   if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { user: { id: string; isMaster: boolean } };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { user: { id: string; isTeacher: boolean } };
     req.user = decoded.user;
     next();
   } catch (e) {
