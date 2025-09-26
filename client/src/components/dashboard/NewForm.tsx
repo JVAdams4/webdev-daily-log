@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import api from '../../services/api';
 
-const NewForm = ({ onFormSubmit }) => {
+interface NewFormProps {
+  onFormSubmit: () => void;
+}
+
+const NewForm: React.FC<NewFormProps> = ({ onFormSubmit }) => {
     const [formData, setFormData] = useState({
         dailyGoal: '', focusOn: '', evidenceOfWork: '', whatWentWell: '',
         challenges: '', helpNeeded: '', nextSteps: '', productivity: '', focus: '', overallSatisfaction: ''
     });
 
-    const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await api.post('/forms', { formData });
