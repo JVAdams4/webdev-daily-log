@@ -15,9 +15,12 @@ jobs:
         run: cd client && npm install && npm run build
       - name: Install and Build Server
         run: cd server && npm install && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Authenticate to Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WEBDEV_DAILY_WORK_LOG }}
-          channelId: live
-          projectId: webdev-daily-work-log
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Deploy to Firebase
+        run: firebase deploy --only functions,hosting --project webdev-daily-work-log
