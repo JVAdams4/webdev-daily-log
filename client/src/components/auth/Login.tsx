@@ -23,6 +23,7 @@ const Login = () => {
             <input type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} placeholder="Password" required className="form-control mb-3" />
             <button type="submit" className="btn btn-primary w-100">Login</button>
             <p className="mt-3">Don't have an account? <Link to="/register">Register here</Link></p>
+            <p className="mt-3"><Link to="/forgot-password">Forgot Password?</Link></p>
         </form>
     );
 };

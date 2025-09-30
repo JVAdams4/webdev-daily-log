@@ -18,7 +18,16 @@ const Navbar = () => {
         <Link className="navbar-brand" to="/">
           <span style={titleStyle}>WebDev Daily Log</span>
         </Link>
-        {user && <button className="btn btn-outline-danger" onClick={logout}>Logout</button>}
+        <div>
+          {user && (
+            <>
+              <Link to="/change-password">
+                <button className="btn btn-secondary me-2">Change Password</button>
+              </Link>
+              <button className="btn btn-outline-danger" onClick={logout}>Logout</button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
+import ChangePassword from './components/auth/ChangePassword';
+import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPassword from './components/auth/ResetPassword';
 import Dashboard from './components/dashboard/Dashboard';
 import TeacherDashboard from './components/teacher/TeacherDashboard';
 import Navbar from './components/layout/Navbar';
@@ -27,6 +30,9 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+      <Route path="/forgot-password" element={user ? <Navigate to="/" /> : <ForgotPassword />} />
+      <Route path="/reset-password/:token" element={user ? <Navigate to="/" /> : <ResetPassword />} />
+      <Route path="/change-password" element={<PrivateRoute><ChangePassword /></PrivateRoute>} />
       <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/teacher" element={<PrivateRoute isTeacherRoute={true}><TeacherDashboard /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
