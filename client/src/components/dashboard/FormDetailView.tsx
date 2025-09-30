@@ -30,22 +30,56 @@ const FormDetailView: React.FC<FormDetailViewProps> = ({ formId, onBack }) => {
         <div>
             <button className="btn btn-secondary mb-3" onClick={onBack}>Back to List</button>
             <h3>{`${form.userFullName} Daily Work Log (${new Date(form.date).toLocaleDateString()})`}</h3>
-            <div className="p-3 rounded bg-light text-dark">
+            <div className="p-3 rounded" style={{backgroundColor: 'hsl(0, 0%, 10%)'}}>
                 <h4>1. Daily Goals & Progress</h4>
-                <div className="mb-2"><strong>My main goal for today is:</strong><p className="bg-white p-2 rounded text-dark">{formData.dailyGoal || 'N/A'}</p></div>
-                <div className="mb-2"><strong>What I will focus on:</strong><p className="bg-white p-2 rounded text-dark">{formData.focusOn || 'N/A'}</p></div>
-                <div className="mb-2"><strong>Evidence of Work:</strong><p className="bg-white p-2 rounded text-dark">{formData.evidenceOfWork || 'N/A'}</p></div>
-                <hr/>
+                <div className="qa-pair">
+                    <label>My main goal for today is:</label>
+                    <p>{formData.dailyGoal || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>What I will focus on:</label>
+                    <p>{formData.focusOn || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>Evidence of Work: (List links, file names, or a brief description of what you produced. Deliverables must be sent to me via Slack.)</label>
+                    <p>{formData.evidenceOfWork || 'No answer provided'}</p>
+                </div>
+
+                <hr style={{borderColor: 'hsl(0, 0%, 30%)'}}/>
+
                 <h4>2. Reflection & Next Steps</h4>
-                <div className="mb-2"><strong>What went well today? (Wins!):</strong><p className="bg-white p-2 rounded text-dark">{formData.whatWentWell || 'N/A'}</p></div>
-                <div className="mb-2"><strong>What challenges did I face?:</strong><p className="bg-white p-2 rounded text-dark">{formData.challenges || 'N/A'}</p></div>
-                <div className="mb-2"><strong>What do I need help with?:</strong><p className="bg-white p-2 rounded text-dark">{formData.helpNeeded || 'N/A'}</p></div>
-                <div className="mb-2"><strong>What are my next steps for tomorrow?:</strong><p className="bg-white p-2 rounded text-dark">{formData.nextSteps || 'N/A'}</p></div>
-                <hr/>
+                <div className="qa-pair">
+                    <label>What went well today? (Wins!):</label>
+                    <p>{formData.whatWentWell || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>What challenges did I face?:</label>
+                    <p>{formData.challenges || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>What do I need help with?:</label>
+                    <p>{formData.helpNeeded || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>What are my next steps for tomorrow?:</label>
+                    <p>{formData.nextSteps || 'No answer provided'}</p>
+                </div>
+
+                <hr style={{borderColor: 'hsl(0, 0%, 30%)'}}/>
+
                 <h4>3. Productivity & Self-Assessment</h4>
-                <div className="mb-2"><strong>Productivity:</strong><p className="bg-white p-2 rounded text-dark">{formData.productivity || 'N/A'}</p></div>
-                <div className="mb-2"><strong>Focus:</strong><p className="bg-white p-2 rounded text-dark">{formData.focus || 'N/A'}</p></div>
-                <div className="mb-2"><strong>Overall Satisfaction:</strong><p className="bg-white p-2 rounded text-dark">{formData.overallSatisfaction || 'N/A'}</p></div>
+                <div className="qa-pair">
+                    <label>Productivity:</label>
+                    <p>{formData.productivity || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>Focus:</label>
+                    <p>{formData.focus || 'No answer provided'}</p>
+                </div>
+                <div className="qa-pair">
+                    <label>Overall Satisfaction:</label>
+                    <p>{formData.overallSatisfaction || 'No answer provided'}</p>
+                </div>
             </div>
             {(user && (user.isTeacher || form.feedback)) && <InstructorFeedback feedback={form.feedback} formId={form._id} isTeacher={user.isTeacher} onFeedbackSaved={(updatedForm) => setForm(updatedForm)} />}
         </div>
