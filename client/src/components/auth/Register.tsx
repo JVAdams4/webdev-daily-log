@@ -10,10 +10,14 @@ const Register = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('Registering user with data:', formData);
         try {
             await register(formData);
             navigate('/');
-        } catch (err) { alert('Registration Failed'); }
+        } catch (err) {
+            console.error('Registration failed:', err);
+            alert('Registration Failed');
+        }
     };
 
     return (
