@@ -24,7 +24,7 @@ const ChangePassword = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+        <form onSubmit={handleSubmit} className="p-4 rounded">
             <h2>Change Password</h2>
             <input type="password" name="currentPassword" value={formData.currentPassword} onChange={handleChange} placeholder="Current Password" required className="form-control mb-3" />
             <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="New Password" required className="form-control mb-3" />

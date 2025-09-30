@@ -17,7 +17,7 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+        <form onSubmit={handleSubmit} className="p-4 rounded">
             <h2>Login</h2>
             <input type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} placeholder="Email" required className="form-control mb-3" />
             <input type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} placeholder="Password" required className="form-control mb-3" />

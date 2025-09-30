@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+        <form onSubmit={handleSubmit} className="p-4 rounded">
             <h2>Forgot Password</h2>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" required className="form-control mb-3" />
             <button type="submit" className="btn btn-primary w-100">Submit</button>

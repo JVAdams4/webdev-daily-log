@@ -17,7 +17,7 @@ const Register = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+        <form onSubmit={handleSubmit} className="p-4 rounded">
             <h2>Register</h2>
             <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required className="form-control mb-3" />
             <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required className="form-control mb-3" />
