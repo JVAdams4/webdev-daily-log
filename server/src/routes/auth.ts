@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
         const docRef = await db.collection('users').add(newUser);
 
         const payload = { user: { id: docRef.id, isTeacher } };
-        jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 3600 }, (err, token) => {
+                jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 3600 }, (err: Error | null, token: string | undefined) => {
             if (err) throw err;
             res.json({ token });
         });

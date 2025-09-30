@@ -15,7 +15,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (userData: any) => Promise<void>;
+  register: (userData: { firstName: string; lastName: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
 }
 
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(userRes.data);
   };
   
-  const register = async (userData: any) => {
+  const register = async (userData: { firstName: string; lastName: string; email: string; password: string }) => {
     const res = await api.post('/auth/register', userData);
     localStorage.setItem('token', res.data.token);
     const userRes = await api.get('/auth');
