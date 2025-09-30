@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+body {
+    background-color: hsl(0, 0%, 8%);
+    color: hsl(0, 0%, 100%);
+    font-family: 'Inter', sans-serif;
+}
+
+.container {
+    background-color: hsl(0, 0%, 12%);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 2rem #4f2f4f;
+}
+
+.btn-primary, .btn-success, .btn-secondary {
+    background-color: hsl(0, 0%, 20%);
+    color: hsl(0, 0%, 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    width: 100%;
+    margin: 0.5rem 0;
+    font-weight: 700;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-secondary:hover {
+    background-color: hsl(75, 94%, 57%);
+    color: hsl(0, 0%, 8%);
+}
+
+.btn-sm {
+    width: auto;
+    padding: 0.5rem 1rem;
+}
+
+.btn-outline-danger {
+    color: hsl(0, 0%, 100%);
+    border-color: hsl(0, 0%, 100%);
+}
+
+.btn-outline-danger:hover {
+    background-color: hsl(0, 100%, 50%);
+    color: hsl(0, 0%, 100%);
+}
+
+.navbar {
+    background-color: hsl(0, 0%, 12%) !important;
+    border-bottom: 1px solid hsl(0, 0%, 20%);
+}
+
+.navbar-brand {
+    color: hsl(0, 0%, 100%) !important;
+}
+
+.form-control, .form-select {
+    background-color: hsl(0, 0%, 20%);
+    color: hsl(0, 0%, 100%);
+    border: 1px solid hsl(0, 0%, 30%);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: hsl(0, 0%, 20%);
+    color: hsl(0, 0%, 100%);
+    border-color: hsl(75, 94%, 57%);
+    box-shadow: 0 0 0 0.25rem hsla(75, 94%, 57%, 0.25);
+}
+
+.form-control::placeholder {
+    color: hsl(75, 94%, 57%);
+    opacity: 0.5;
+}
+
+.list-group-item {
+    background-color: hsl(0, 0%, 20%);
+    border: 1px solid hsl(0, 0%, 30%);
+    color: hsl(0, 0%, 100%);
+    cursor: pointer;
+}
+
+.list-group-item:hover {
+    background-color: hsl(0, 0%, 25%);
+}
+
+h2, h3, h4 {
+    color: hsl(75, 94%, 57%);
+}
+
+a {
+    color: hsl(75, 94%, 57%);
+}
+
+a:hover {
+    color: hsl(75, 94%, 40%);
+}
+
+.status-indicator {
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.graded-status {
+    color: hsl(120, 100%, 85%);
+    background-color: hsla(120, 61%, 50%, 0.2);
+}
+
+.not-graded-status {
+    color: hsl(3, 100%, 85%);
+    background-color: hsla(3, 70%, 50%, 0.2);
+}
+
+.ungraded-count {
+    background-color: hsl(3, 70%, 50%);
+    color: white;
+    border-radius: 50%;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.qa-pair {
+    margin-bottom: 1rem;
+}
+
+.qa-pair label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.qa-pair p {
+    background-color: hsl(0, 0%, 16%);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    white-space: pre-wrap; /* To preserve whitespace and newlines in answers */
+    margin-bottom: 0;
+}

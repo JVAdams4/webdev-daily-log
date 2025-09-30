@@ -6,6 +6,7 @@ import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import TeacherDashboard from './components/teacher/TeacherDashboard';
 import Navbar from './components/layout/Navbar';
+import './App.css';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
