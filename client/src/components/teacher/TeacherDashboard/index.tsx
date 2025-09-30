@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import UserFormsView from './UserFormsView';
+import UserFormsView from '../UserFormsView';
 
 // Define user interface based on usage
 interface User {
