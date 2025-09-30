@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
-import TeacherDashboard from './components/teacher/TeacherDashboard.tsx';
+import TeacherDashboard from './components/teacher/TeacherDashboard';
 import Navbar from './components/layout/Navbar';
 
 interface PrivateRouteProps {
