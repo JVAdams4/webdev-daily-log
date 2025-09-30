@@ -29,7 +29,10 @@ router.post('/register', async (req, res) => {
             if (err) throw err;
             res.json({ token });
         });
-    } catch (err) { res.status(500).send('Server error'); }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
 });
 
 router.post('/login', async (req, res) => {
@@ -54,7 +57,10 @@ router.post('/login', async (req, res) => {
             if (err) throw err;
             res.json({ token });
         });
-    } catch (err) { res.status(500).send('Server error'); }
+    } catch (err) { 
+        console.error(err);
+        res.status(500).send('Server error');
+    }
 });
 
 router.post('/change-password', auth, async (req: AuthRequest, res) => {
@@ -78,7 +84,10 @@ router.post('/change-password', auth, async (req: AuthRequest, res) => {
         await userRef.update({ password: hashedPassword });
 
         res.json({ msg: 'Password changed successfully' });
-    } catch (err) { res.status(500).send('Server Error'); }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 router.post('/forgot-password', async (req, res) => {
@@ -98,7 +107,10 @@ router.post('/forgot-password', async (req, res) => {
 
         // In a real app, you would send an email with the token
         res.json({ token });
-    } catch (err) { res.status(500).send('Server Error'); }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 router.post('/reset-password/:token', async (req, res) => {
@@ -124,7 +136,10 @@ router.post('/reset-password/:token', async (req, res) => {
         await tokenDoc.ref.delete();
 
         res.json({ msg: 'Password has been reset' });
-    } catch (err) { res.status(500).send('Server Error'); }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 router.get('/', auth, async (req: AuthRequest, res) => {
@@ -135,7 +150,10 @@ router.get('/', auth, async (req: AuthRequest, res) => {
         }
         const user = doc.data() as IUser;
         res.json(user);
-    } catch (err) { res.status(500).send('Server Error'); }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 export default router;
