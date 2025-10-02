@@ -13,8 +13,8 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/forms', formRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/forms', formRoutes);
 
 export const api = functions.https.onRequest(app);
