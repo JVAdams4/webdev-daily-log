@@ -24,6 +24,8 @@ jobs:
         with:
           workload_identity_provider: 'projects/583946476781/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'github-actions-deployer@webdev-daily-log.iam.gserviceaccount.com'
+      - name: Explicitly login to gcloud
+        run: gcloud auth login --cred-file=${{ steps.auth.outputs.credentials_file_path }}
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       - name: Deploy to Firebase
