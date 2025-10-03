@@ -18,7 +18,7 @@ jobs:
         run: cd client && npm install && npm run build
       - name: Authenticate to Google Cloud
         id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+        uses: 'firebase-extended/action-auth@v0'
         with:
           workload_identity_provider: 'projects/583946476781/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'github-actions-deployer@webdev-daily-log.iam.gserviceaccount.com'
