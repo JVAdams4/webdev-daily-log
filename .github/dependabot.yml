@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Enable version updates for npm in the server directory
+  - package-ecosystem: "npm"
+    directory: "/server"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  # Enable version updates for npm in the client directory
+  - package-ecosystem: "npm"
+    directory: "/client"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"

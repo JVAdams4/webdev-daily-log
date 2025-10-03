@@ -1,0 +1,37 @@
+name: Fix Dependencies
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Fix server vulnerabilities
+        run: |
+          cd server
+          npm audit fix
+      
+      - name: Update firebase-functions
+        run: |
+          cd server
+          npm install firebase-functions@latest
+
+      - name: Update client dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore: fix dependencies and vulnerabilities"
+          branch: main
+          file_pattern: "**/package.json **/package-lock.json"
