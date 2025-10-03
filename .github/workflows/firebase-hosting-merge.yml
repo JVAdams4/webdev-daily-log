@@ -9,9 +9,6 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
     steps:
       - uses: actions/checkout@v4
       - name: Install and Build Client
@@ -22,9 +19,6 @@ jobs:
         id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/583946476781/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-          service_account: 'github-actions-deployer@webdev-daily-log.iam.gserviceaccount.com'
-      - name: Get GCloud Auth Token and Set as Env Var
-        run: echo "FIREBASE_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
       - name: Deploy to Firebase
         run: cd server && npx firebase deploy --only functions,hosting --project webdev-daily-log --force
